@@ -18,7 +18,7 @@ exports.createProject = async (req,res) => {
         const { title,description }= req.body;
         if(!title) return res.status(400).json({message:"กรุณากรอกชื่อโปรเจกต์"});
 
-        const project = Project.create({
+        const project = await Project.create({
             title,
             description,
             user:req.user.id,
