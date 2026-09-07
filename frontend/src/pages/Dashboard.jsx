@@ -7,6 +7,8 @@ export default function Dashboard() {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [newProjectTitle, setNewProjectTitle] = useState("");
+  // เก็บ ID หรือ Object โปรเจกต์ที่จะลบ (ถ้าเป็น null แปลว่าปิด Modal อยู่)
+  const [projectToDelete, setProjectToDelete] = useState(null);
 
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -54,24 +56,52 @@ export default function Dashboard() {
   };
 
   // --- เพิ่มฟังก์ชันลบ Project ---
-  const handleDeleteProject = async (projectId, e) => {
-    e.stopPropagation(); // ป้องกันไม่ให้กดลบแล้วกลายเป็นการกดเลือกโปรเจกต์
-    if (!window.confirm("ยืนยันที่จะลบโปรเจกต์นี้รวมถึงงานทั้งหมดในโปรเจกต์?")) return;
+
+  const openDeleteModal = (project, e) => {
+    e.stopPropagation();// ป้องกันไม่ให้กดลบแล้วกลายเป็นการกดเลือกโปรเจกต์
+    setProjectToDelete(project);
+  }
+
+  // 2. กดยืนยันใน Modal เพื่อลบข้อมูลจริง
+  const confirmDeleteProject = async () => {
+    if (!projectToDelete) return;
 
     try {
+      const projectId = projectToDelete._id;
       await API.delete(`/projects/${projectId}`);
+
       const updatedProjects = projects.filter((p) => p._id !== projectId);
       setProjects(updatedProjects);
 
-      // ถ้าลบโปรเจกต์ที่เปิดอยู่ ให้สลับไปเปิดโปรเจกต์แรกที่เหลือ หรือล้างค่าหากไม่เหลือเลย
+      // Logic 
       if (selectedProject?._id === projectId) {
         setSelectedProject(updatedProjects.length > 0 ? updatedProjects[0] : null);
         setTasks([]);
       }
     } catch (err) {
       alert("ลบ Project ไม่สำเร็จ");
+    } finally {
+      setProjectToDelete(null); // ปิด Modal
     }
   };
+  // const handleDeleteProject = async (projectId, e) => {
+  //   e.stopPropagation(); // ป้องกันไม่ให้กดลบแล้วกลายเป็นการกดเลือกโปรเจกต์
+  //   if (!window.confirm("ยืนยันที่จะลบโปรเจกต์นี้รวมถึงงานทั้งหมดในโปรเจกต์?")) return;
+
+  //   try {
+  //     await API.delete(`/projects/${projectId}`);
+  //     const updatedProjects = projects.filter((p) => p._id !== projectId);
+  //     setProjects(updatedProjects);
+
+  //     // ถ้าลบโปรเจกต์ที่เปิดอยู่ ให้สลับไปเปิดโปรเจกต์แรกที่เหลือ หรือล้างค่าหากไม่เหลือเลย
+  //     if (selectedProject?._id === projectId) {
+  //       setSelectedProject(updatedProjects.length > 0 ? updatedProjects[0] : null);
+  //       setTasks([]);
+  //     }
+  //   } catch (err) {
+  //     alert("ลบ Project ไม่สำเร็จ");
+  //   }
+  // };
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
@@ -138,7 +168,7 @@ export default function Dashboard() {
       {/* Main Container */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Sidebar Projects */}
           <aside className="lg:col-span-4 bg-white rounded-3xl p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)]">
             <div className="flex items-center justify-between mb-4 px-1">
@@ -173,15 +203,14 @@ export default function Dashboard() {
                   <div
                     key={proj._id}
                     onClick={() => setSelectedProject(proj)}
-                    className={`group shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-medium transition-all cursor-pointer ${
-                      isActive
+                    className={`group shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-medium transition-all cursor-pointer ${isActive
                         ? "bg-[#F3F1EC] text-stone-900 font-semibold"
                         : "text-stone-500 hover:bg-[#F8F7F4] hover:text-stone-800"
-                    }`}
+                      }`}
                   >
                     <span className="truncate pr-2">{proj.title}</span>
                     <button
-                      onClick={(e) => handleDeleteProject(proj._id, e)}
+                      onClick={(e) => openDeleteModal(proj._id, e)}
                       className="opacity-100 lg:opacity-0 group-hover:opacity-100 text-stone-400 hover:text-rose-500 text-xs px-1.5 transition-all"
                       title="Delete Project"
                     >
@@ -192,6 +221,32 @@ export default function Dashboard() {
               })}
             </div>
           </aside>
+          {/* Custom Delete Confirmation Modal */}
+          {projectToDelete && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+              <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl transition-all">
+                <h3 className="text-lg font-semibold text-stone-800">ยืนยันการลบโปรเจกต์</h3>
+                <p className="text-sm text-stone-500 mt-2">
+                  คุณต้องการลบโปรเจกต์ <span className="font-semibold text-stone-700">"{projectToDelete.title}"</span> รวมถึงงานทั้งหมดในโปรเจกต์นี้ใช่หรือไม่?
+                </p>
+
+                <div className="flex justify-end gap-3 mt-6">
+                  <button
+                    onClick={() => setProjectToDelete(null)}
+                    className="px-4 py-2 text-xs font-medium text-stone-600 bg-stone-100 rounded-xl hover:bg-stone-200 transition-colors"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    onClick={confirmDeleteProject}
+                    className="px-4 py-2 text-xs font-medium text-white bg-rose-500 rounded-xl hover:bg-rose-600 transition-colors shadow-sm"
+                  >
+                    ลบโปรเจกต์
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Main Tasks Workspace */}
           <section className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] min-h-[420px] flex flex-col">
@@ -204,7 +259,7 @@ export default function Dashboard() {
                     <div className="flex items-center space-x-3 mt-0.5">
                       <h1 className="text-xl sm:text-2xl font-semibold text-stone-900 tracking-tight">{selectedProject.title}</h1>
                       <button
-                        onClick={(e) => handleDeleteProject(selectedProject._id, e)}
+                        onClick={(e) => openDeleteModal(selectedProject._id, e)}
                         className="text-xs text-stone-400 hover:text-rose-500 transition-colors"
                       >
                         Delete
@@ -245,9 +300,8 @@ export default function Dashboard() {
                     tasks.map((task) => (
                       <div
                         key={task._id}
-                        className={`group flex items-center justify-between p-3 sm:p-3.5 rounded-2xl transition-all ${
-                          task.completed ? "bg-[#FAFAFA]" : "bg-[#FBFBF9] hover:bg-[#F5F4F0]"
-                        }`}
+                        className={`group flex items-center justify-between p-3 sm:p-3.5 rounded-2xl transition-all ${task.completed ? "bg-[#FAFAFA]" : "bg-[#FBFBF9] hover:bg-[#F5F4F0]"
+                          }`}
                       >
                         <label className="flex items-center space-x-3 cursor-pointer flex-1 min-w-0 pr-3">
                           <input
@@ -257,9 +311,8 @@ export default function Dashboard() {
                             className="w-4 h-4 rounded-full accent-stone-800 cursor-pointer border-none bg-stone-200"
                           />
                           <span
-                            className={`text-xs sm:text-sm truncate transition-all ${
-                              task.completed ? "line-through text-stone-300" : "text-stone-700 font-medium"
-                            }`}
+                            className={`text-xs sm:text-sm truncate transition-all ${task.completed ? "line-through text-stone-300" : "text-stone-700 font-medium"
+                              }`}
                           >
                             {task.title}
                           </span>
