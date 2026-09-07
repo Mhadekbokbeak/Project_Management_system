@@ -210,7 +210,7 @@ export default function Dashboard() {
                   >
                     <span className="truncate pr-2">{proj.title}</span>
                     <button
-                      onClick={(e) => openDeleteModal(proj._id, e)}
+                      onClick={(e) => openDeleteModal(proj, e)}
                       className="opacity-100 lg:opacity-0 group-hover:opacity-100 text-stone-400 hover:text-rose-500 text-xs px-1.5 transition-all"
                       title="Delete Project"
                     >
@@ -221,6 +221,7 @@ export default function Dashboard() {
               })}
             </div>
           </aside>
+          
           {/* Custom Delete Confirmation Modal */}
           {projectToDelete && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -259,7 +260,7 @@ export default function Dashboard() {
                     <div className="flex items-center space-x-3 mt-0.5">
                       <h1 className="text-xl sm:text-2xl font-semibold text-stone-900 tracking-tight">{selectedProject.title}</h1>
                       <button
-                        onClick={(e) => openDeleteModal(selectedProject._id, e)}
+                        onClick={(e) => openDeleteModal(selectedProject, e)}
                         className="text-xs text-stone-400 hover:text-rose-500 transition-colors"
                       >
                         Delete
