@@ -18,7 +18,7 @@ export default function DarkModeToggle() {
 
 
     return (
-        <button onClick={() => setIsDark(!isDark)} className="p-2 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 transition-all text-xs flex items-center gap-2 border border-stone-200 dark:border-stone-700"
+        <button onClick={() => setIsDark(!isDark)} className="p-2 rounded-sm bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-xs flex items-center gap-2 border border-neutral-200 dark:border-neutral-700"
             aria-label="Toggle Theme">
                 {isDark ? "☀️" :"🌙"}
         </button>

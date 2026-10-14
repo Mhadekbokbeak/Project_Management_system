@@ -21,7 +21,7 @@ export default function Login() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#FAF9F6] dark:bg-stone-950 text-stone-800 dark:text-stone-100 flex items-center justify-center p-4 antialiased transition-colors duration-200">
+    <div className="relative min-h-screen bg-white dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 flex items-center justify-center p-6 antialiased transition-colors duration-200">
       
       {/* 1. วางปุ่ม DarkModeToggle ไว้มุมขวาบน */}
       <div className="absolute top-4 right-4 z-10">
@@ -29,27 +29,27 @@ export default function Login() {
       </div>
 
       {/* 2. เพิ่ม class dark: ให้กล่อง Card */}
-      <div className="max-w-sm w-full bg-white dark:bg-stone-900 border border-transparent dark:border-stone-800 rounded-3xl p-8 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.03)] dark:shadow-none transition-colors duration-200">
-        <div className="text-center mb-8">
-          <span className="inline-block w-3 h-3 rounded-full bg-stone-900 dark:bg-stone-100 mb-4"></span>
-          <h1 className="text-xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">Sign in</h1>
-          <p className="text-xs text-stone-400 dark:text-stone-500 mt-1">Welcome back to TaskSpace</p>
+      <div className="max-w-sm w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm p-8 sm:p-10 transition-colors duration-200">
+        <div className="text-center mb-10">
+          <span className="inline-block w-2 h-2 rounded-full bg-neutral-900 dark:bg-neutral-100 mb-6"></span>
+          <h1 className="text-xl font-light text-neutral-950 dark:text-neutral-50 tracking-[0.14em] uppercase">Sign in</h1>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-3 tracking-wide">Welcome back to TaskSpace</p>
         </div>
 
         {/* 3. ปรับสี Error Message ใน Dark Mode */}
         {error && (
-          <div className="mb-4 p-3 bg-rose-50/60 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40 text-xs rounded-2xl text-center">
+          <div className="mb-5 p-3 bg-neutral-50 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-700 text-xs rounded-sm text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             {/* 4. ปรับสี Input ใน Dark Mode */}
             <input
               type="email"
               placeholder="Email address"
-              className="w-full text-xs px-4 py-3 bg-[#F5F4F0] dark:bg-stone-800 rounded-2xl border-none focus:outline-none focus:ring-1 focus:ring-stone-300 dark:focus:ring-stone-600 transition-all placeholder:text-stone-400 dark:placeholder:text-stone-500 text-stone-800 dark:text-stone-100"
+              className="w-full text-xs px-4 py-4 bg-white dark:bg-neutral-900 rounded-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-300 transition-colors placeholder:text-neutral-500 dark:placeholder:text-neutral-400 text-neutral-800 dark:text-neutral-100"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
@@ -60,7 +60,7 @@ export default function Login() {
             <input
               type="password"
               placeholder="Password"
-              className="w-full text-xs px-4 py-3 bg-[#F5F4F0] dark:bg-stone-800 rounded-2xl border-none focus:outline-none focus:ring-1 focus:ring-stone-300 dark:focus:ring-stone-600 transition-all placeholder:text-stone-400 dark:placeholder:text-stone-500 text-stone-800 dark:text-stone-100"
+              className="w-full text-xs px-4 py-4 bg-white dark:bg-neutral-900 rounded-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-300 transition-colors placeholder:text-neutral-500 dark:placeholder:text-neutral-400 text-neutral-800 dark:text-neutral-100"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
@@ -70,15 +70,15 @@ export default function Login() {
           {/* 5. ปรับสีปุ่ม Submit (Light Mode ดำ / Dark Mode ขาว) */}
           <button
             type="submit"
-            className="w-full bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-stone-200 text-white dark:text-stone-900 font-medium text-xs py-3 rounded-2xl transition-all shadow-sm mt-2"
+            className="w-full bg-neutral-900 hover:bg-neutral-700 dark:bg-neutral-100 dark:hover:bg-neutral-300 text-white dark:text-neutral-900 font-medium text-[10px] uppercase tracking-[0.16em] py-4 rounded-sm transition-colors mt-3"
           >
             Sign in
           </button>
         </form>
 
-        <p className="text-center text-xs text-stone-400 dark:text-stone-500 mt-6">
+        <p className="text-center text-xs text-neutral-500 dark:text-neutral-400 mt-8">
           Don't have an account?{" "}
-          <Link to="/register" className="font-semibold text-stone-800 dark:text-stone-200 hover:underline">
+          <Link to="/register" className="font-medium text-neutral-900 dark:text-neutral-100 underline underline-offset-4 decoration-neutral-300 dark:decoration-neutral-700 hover:decoration-current">
             Register
           </Link>
         </p>
